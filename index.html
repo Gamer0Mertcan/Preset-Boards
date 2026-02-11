@@ -136,10 +136,18 @@
         const PLAYER_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/playerdata.json';
 
         const KEY_NAMES = {
-            "C_Pwr": "Power", "C_PGen": "Power Generator", "T_Jor": "Jordi",
-            "C_AIMax": "Max AI Value", "C_Agr": "Aggression", "P_EquDis": "Equipment Disabler",
-            "T_JorWhi": "White", "T_JorDivPun": "Divine Punishment", "C_Msk": "Mask Hit Points",
-            "T_JorGolGun": "Golden Gun", "T_JorStr": "Stratosfear", "T_Pup": ["Puppet", "Marionette"][Math.Floor(Math.Random() * (2 - 1 + 1)) + 1]
+            "C_Pwr": "Power", 
+            "C_PGen": "Power Generator", 
+            "T_Jor": "Jordi",
+            "C_AIMax": "Max AI Value", 
+            "C_Agr": "Aggression", 
+            "P_EquDis": "Equipment Disabler",
+            "T_JorWhi": "White", 
+            "T_JorDivPun": "Divine Punishment", 
+            "C_Msk": "Mask Hit Points",
+            "T_JorGolGun": "Golden Gun", 
+            "T_JorStr": "Stratosfear", 
+            "T_Pup": Math.random() < 0.5 ? "Puppet" : "Marionette" 
         };
 
         const BOOL_KEYS = ["P_EquDis"];

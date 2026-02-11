@@ -134,6 +134,14 @@
         const PRESET_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/preset-data.json';
         const PLAYER_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/playerdata.json';
 
+        const DEFAULT_KEYS = {
+            "C_Pwr": 100,
+            "C_PGen": 100,
+            "C_Agr": 100,
+            "C_Msk": 2,
+            "P_EquDis": 0
+        }
+        
         const KEY_NAMES = {
             "C_Pwr": "Power", 
             "C_PGen": "Power Generator", 
@@ -153,7 +161,7 @@
             "C_MvR": "Sprint Speed",
             "I_EquJorPai": "Jordi's Paintbrush",
             "P_JorRep": "Jordi's Perserverance",
-            "P_JorLonTim": "Jordi \"Door Camper\""
+            "P_JorLonTim": "Jordi The Door Camper"
         };
 
         const BOOL_KEYS = ["P_EquDis", "P_JorSha", "I_EquJorPai"];
@@ -215,26 +223,37 @@
             const li = document.createElement('li');
             li.className = 'preset-item';
             
-            const parts = codeString.split(',').filter(p => p.includes('='));
-            const namePart = parts.find(p => p.startsWith('Name='));
+            const rawParts = codeString.split(',').filter(p => p.includes('='));
+            const namePart = rawParts.find(p => p.startsWith('Name='));
             const displayName = namePart ? namePart.split('=')[1] : "Unnamed Preset";
-            const technicalParts = parts.filter(p => !p.startsWith('Name='));
+            
+            const technicalMap = {};
+            rawParts.forEach(p => {
+                if (!p.startsWith('Name=')) {
+                    const [k, v] = p.split('=');
+                    technicalMap[k] = v;
+                }
+            });
+
+            Object.keys(DEFAULT_KEYS).forEach(key => {
+                if (!(key in technicalMap)) {
+                    technicalMap[key] = String(DEFAULT_KEYS[key]);
+                }
+            });
+
+            const technicalParts = Object.entries(technicalMap).map(([k, v]) => `${k}=${v}`);
 
             const prefixOrder = { 'T': 1, 'P': 2, 'C': 3, 'I': 4 };
             
             technicalParts.sort((a, b) => {
                 const weightA = prefixOrder[a[0]] || 99;
                 const weightB = prefixOrder[b[0]] || 99;
-                
-                if (weightA !== weightB) {
-                    return weightA - weightB;
-                }
+                if (weightA !== weightB) return weightA - weightB;
                 
                 const keyA = a.split('=')[0];
                 const keyB = b.split('=')[0];
                 const nameA = (KEY_NAMES[keyA] || keyA.slice(2)).toLowerCase();
                 const nameB = (KEY_NAMES[keyB] || keyB.slice(2)).toLowerCase();
-                
                 return nameA.localeCompare(nameB);
             });
 

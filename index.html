@@ -16,6 +16,7 @@
             --color-t: #f87171;
             --color-p: #c084fc;
             --color-c: #facc15;
+            --color-i: #0033ff;
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -224,7 +225,7 @@
 
             const detailsHtml = technicalParts.map(part => {
                 const [key, val] = part.split('=');
-                let colorVar = key.startsWith('T_') ? 'var(--color-t)' : key.startsWith('P_') ? 'var(--color-p)' : 'var(--color-c)';
+                let colorVar = key.startsWith('I_') ? 'var(--color-i)' : key.startsWith('T_') ? 'var(--color-t)' : key.startsWith('P_') ? 'var(--color-p)' : 'var(--color-c)';
                 let displayVal = val;
                 if (PERCENTAGED_KEYS.includes(key)) displayVal = (key === "C_Agr" ? Math.floor(val * 100) : val) + "%";
                 if (BOOL_KEYS.includes(key)) displayVal = (val.trim() === "1") ? "Enabled" : "Disabled";

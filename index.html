@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preset Boards</title>
-    <link rel="icon" href="data:,"> 
+    <link rel="icon" href="data:,">
     <style>
         :root {
             --primary: #6366f1;
@@ -76,7 +76,7 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
         }
 
         .tab-btn.active {
@@ -98,8 +98,6 @@
             box-sizing: border-box;
             transition: all 0.2s;
         }
-
-        #search-input:focus { border-color: var(--primary); }
 
         #status-dot {
             height: 10px;
@@ -130,10 +128,7 @@
             background: #242f42;
             border-radius: 14px;
             border: 1px solid #334155;
-            transition: transform 0.2s;
         }
-
-        .preset-item:hover { transform: translateY(-2px); }
 
         .header-row {
             display: flex;
@@ -170,12 +165,6 @@
             border-radius: 12px;
             margin-bottom: 10px;
             border: 1px solid #334155;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .rank-badge {
@@ -191,7 +180,6 @@
         .points-text {
             color: var(--accent);
             font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
         }
 
         .copy-btn {
@@ -203,7 +191,6 @@
             cursor: pointer;
             font-size: 0.75rem;
             font-weight: 600;
-            transition: opacity 0.2s;
         }
 
         .copy-btn.success { background: var(--accent); }
@@ -248,9 +235,9 @@
     </div>
 
     <script>
-        // Use direct Raw URLs to fix CORS
+        // Use direct Raw URLs for CORS safety
         const PRESET_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/preset-data.json';
-        const PLAYER_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/playerdata.json';
+        const PLAYER_URL = '';
 
         const KEY_NAMES = {
             "C_Pwr": "Power", "C_PGen": "Power Generator", "T_Jor": "Jordi",
@@ -263,7 +250,8 @@
         const PERCENTAGED_KEYS = ["C_Pwr", "C_Agr", "C_PGen"];
         let allPresets = [];
 
-        // Define SwitchTab early to avoid ReferenceErrors
+        // --- Core Functions ---
+
         function switchTab(tab) {
             const presetList = document.getElementById('list-container');
             const leaderboard = document.getElementById('leaderboard-container');
@@ -287,17 +275,33 @@
             }
         }
 
-        // Attach listeners manually to avoid "Uncaught ReferenceError"
-        document.getElementById('tab-presets').addEventListener('click', () => switchTab('presets'));
-        document.getElementById('tab-leaderboard').addEventListener('click', () => switchTab('leaderboard'));
-
-        (function checkEasterEgg() {
-            const titleEl = document.getElementById('title');
-            if (Math.random() <= 0.01) {
-                titleEl.innerText = "Baddie Tierlist";
-                titleEl.classList.add('easter-egg');
+        async function fetchLeaderboard() {
+            const container = document.getElementById('leaderboard-list');
+            container.innerHTML = '<p class="loading-pulse">Calculating rankings...</p>';
+            try {
+                const response = await fetch(PLAYER_URL, { cache: 'no-store' });
+                if (!response.ok) throw new Error("File not found");
+                const data = await response.json();
+                data.sort((a, b) => b.points - a.points);
+                container.innerHTML = data.map((player, i) => `
+                    <div class="leaderboard-item">
+                        <div><span class="rank-badge">#${i + 1}</span><span style="font-weight:600;">${player.name}</span></div>
+                        <span class="points-text">${player.points.toLocaleString()} pts</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = `<p class="error">⚠️ Sync Error: ${err.message}</p>`;
             }
-        })();
+        }
+
+        async function copyPreset(text, button) {
+            try {
+                await navigator.clipboard.writeText(text);
+                button.innerText = 'Copied!';
+                button.classList.add('success');
+                setTimeout(() => { button.innerText = 'Copy'; button.classList.remove('success'); }, 2000);
+            } catch (e) { console.error("Copy failed"); }
+        }
 
         function createPresetItem(codeString) {
             const li = document.createElement('li');
@@ -327,6 +331,7 @@
                 </div>
                 <div class="details-grid">${detailsHtml}</div>`;
             
+            // Modern click handler inside the list generator
             li.querySelector('.copy-btn').addEventListener('click', function() {
                 copyPreset(codeString, this);
             });
@@ -334,21 +339,12 @@
             return li;
         }
 
-        async function copyPreset(text, button) {
-            try {
-                await navigator.clipboard.writeText(text);
-                button.innerText = 'Copied!';
-                button.classList.add('success');
-                setTimeout(() => { button.innerText = 'Copy'; button.classList.remove('success'); }, 2000);
-            } catch (e) { console.error("Copy failed", e); }
-        }
-
         function renderList(filterText = "") {
             const list = document.getElementById('list-container');
             list.innerHTML = '';
             const filtered = allPresets.filter(str => str.toLowerCase().includes(filterText.toLowerCase()));
             if (filtered.length === 0) {
-                list.innerHTML = '<li style="text-align: center; padding: 40px; color: var(--muted);">No presets match your search.</li>';
+                list.innerHTML = '<li style="text-align: center; padding: 40px; color: var(--muted);">No presets match.</li>';
                 return;
             }
             filtered.forEach(str => list.appendChild(createPresetItem(str)));
@@ -358,39 +354,19 @@
             const dot = document.getElementById('status-dot');
             try {
                 const response = await fetch(PRESET_URL, { cache: 'no-store' });
-                if (!response.ok) throw new Error("Could not find preset-data.json");
+                if (!response.ok) throw new Error("File not found");
                 const data = await response.json();
                 allPresets = data.map(item => (typeof item === 'string') ? item : item.string);
                 renderList();
                 dot.style.backgroundColor = 'var(--accent)';
                 dot.style.boxShadow = '0 0 8px var(--accent)';
             } catch (err) {
-                document.getElementById('list-container').innerHTML = `<li class="error">⚠️ Sync Error: ${err.message}</li>`;
+                document.getElementById('list-container').innerHTML = `<li class="error">⚠️ Database Offline: ${err.message}</li>`;
                 dot.style.backgroundColor = '#ef4444';
             }
         }
 
-        async function fetchLeaderboard() {
-            const container = document.getElementById('leaderboard-list');
-            container.innerHTML = '<p class="loading-pulse">Calculating rankings...</p>';
-            try {
-                const response = await fetch(PLAYER_URL, { cache: 'no-store' });
-                if (!response.ok) throw new Error("Could not find playerdata.json");
-                const data = await response.json();
-                data.sort((a, b) => b.points - a.points);
-                container.innerHTML = data.map((player, i) => `
-                    <div class="leaderboard-item">
-                        <div><span class="rank-badge">#${i + 1}</span><span style="font-weight:600;">${player.name}</span></div>
-                        <span class="points-text">${player.points.toLocaleString()} pts</span>
-                    </div>
-                `).join('');
-            } catch (err) {
-                container.innerHTML = `<p class="error">⚠️ Sync Error: ${err.message}</p>`;
-            }
-        }
+        // --- Event Listeners (The "Fix") ---
 
-        document.getElementById('search-input').addEventListener('input', (e) => renderList(e.target.value));
-        fetchPresets();
-    </script>
-</body>
-</html>
+        document.getElementById('tab-presets').addEventListener('click', () => switchTab('presets'));
+        document.getElementById('tab-leader

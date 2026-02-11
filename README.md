@@ -4,7 +4,7 @@ an unofficial difficulty list and leaderboard for challenge presets combined in 
 # Discussion
 come check out the discord forum to apply and submit (Completions/Buffed)/Verifications/Greenruns
 
-
+_ _
 
 
 

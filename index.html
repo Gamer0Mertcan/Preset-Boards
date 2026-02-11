@@ -152,7 +152,7 @@
             "P_JorSha": "Jordi's Shadow",
             "C_MvW": "Movement Speed",
             "C_MvR": "Sprint Speed",
-            "P_EquJorPai": "Jordi's Paintbrush"
+            "I_EquJorPai": "Jordi's Paintbrush"
         };
 
         const BOOL_KEYS = ["P_EquDis", "P_JorSha", "C_EquJorPai"];
@@ -219,7 +219,7 @@
             const displayName = namePart ? namePart.split('=')[1] : "Unnamed Preset";
             const technicalParts = parts.filter(p => !p.startsWith('Name='));
 
-            const prefixOrder = { 'T': 1, 'P': 2, 'C': 3 };
+            const prefixOrder = { 'T': 1, 'P': 2, 'C': 3, 'I': 4 };
             technicalParts.sort((a, b) => (prefixOrder[a[0]] || 99) - (prefixOrder[b[0]] || 99));
 
             const detailsHtml = technicalParts.map(part => {

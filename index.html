@@ -71,7 +71,6 @@
         
         .preset-item { padding: 16px; margin-bottom: 16px; background: #242f42; border-radius: 14px; border: 1px solid #334155; }
         
-        /* COPY BUTONU BURADA DÜZELTİLDİ */
         .header-row {
             display: flex;
             justify-content: space-between;
@@ -132,7 +131,6 @@
     </div>
 
     <script>
-        // URL'ler güncel
         const PRESET_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/preset-data.json';
         const PLAYER_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/playerdata.json';
 
@@ -142,14 +140,14 @@
             "T_Jor": "Jordi",
             "C_AIMax": "Max AI Value", 
             "C_Agr": "Aggression", 
-            "C_NDur": "Night " + (Math.random() < 0.5 ? "Length" : "Duration"),
+            "C_NDur": "Night Duration",
             "P_EquDis": "Equipment Disabler",
             "T_JorWhi": "White", 
             "T_JorDivPun": "Divine Punishment", 
             "C_Msk": "Mask Hit Points",
             "T_JorGolGun": "Golden Gun", 
             "T_JorStr": "Stratosfear", 
-            "T_Pup": Math.random() < 0.5 ? "Puppet" : "Marionette",
+            "T_Pup": "Puppet",
             "P_JorSha": "Jordi's Shadow",
             "C_MvW": "Movement Speed",
             "C_MvR": "Sprint Speed",
@@ -221,7 +219,22 @@
             const technicalParts = parts.filter(p => !p.startsWith('Name='));
 
             const prefixOrder = { 'T': 1, 'P': 2, 'C': 3, 'I': 4 };
-            technicalParts.sort((a, b) => (prefixOrder[a[0]] || 99) - (prefixOrder[b[0]] || 99));
+            
+            technicalParts.sort((a, b) => {
+                const weightA = prefixOrder[a[0]] || 99;
+                const weightB = prefixOrder[b[0]] || 99;
+                
+                if (weightA !== weightB) {
+                    return weightA - weightB;
+                }
+                
+                const keyA = a.split('=')[0];
+                const keyB = b.split('=')[0];
+                const nameA = (KEY_NAMES[keyA] || keyA.slice(2)).toLowerCase();
+                const nameB = (KEY_NAMES[keyB] || keyB.slice(2)).toLowerCase();
+                
+                return nameA.localeCompare(nameB);
+            });
 
             const detailsHtml = technicalParts.map(part => {
                 const [key, val] = part.split('=');
@@ -274,14 +287,11 @@
             }
         }
 
-        // --- Event Listeners Tamamlandı ---
         document.getElementById('tab-presets').addEventListener('click', () => switchTab('presets'));
         document.getElementById('tab-leaderboard').addEventListener('click', () => switchTab('leaderboard'));
         document.getElementById('search-input').addEventListener('input', (e) => renderList(e.target.value));
 
-        // Başlangıçta verileri çek
         fetchPresets();
-
     </script>
 </body>
 </html>

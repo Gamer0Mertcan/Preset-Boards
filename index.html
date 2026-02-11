@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preset Boards</title>
+    <link rel="icon" href="data:,"> 
     <style>
         :root {
             --primary: #6366f1;
@@ -228,8 +229,8 @@
             <h2><span id="title">Preset Boards</span><span id="status-dot"></span></h2>
             
             <div class="tab-container">
-                <button id="tab-presets" class="tab-btn active" onclick="switchTab('presets')">Presets</button>
-                <button id="tab-leaderboard" class="tab-btn" onclick="switchTab('leaderboard')">Leaderboard</button>
+                <button id="tab-presets" class="tab-btn active">Presets</button>
+                <button id="tab-leaderboard" class="tab-btn">Leaderboard</button>
             </div>
 
             <div id="search-wrapper">
@@ -247,7 +248,7 @@
     </div>
 
     <script>
-        // Updated URLs to directly hit GitHub's raw storage to bypass CORS redirects
+        // Use direct Raw URLs to fix CORS
         const PRESET_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/preset-data.json';
         const PLAYER_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/playerdata.json';
 
@@ -262,6 +263,7 @@
         const PERCENTAGED_KEYS = ["C_Pwr", "C_Agr", "C_PGen"];
         let allPresets = [];
 
+        // Define SwitchTab early to avoid ReferenceErrors
         function switchTab(tab) {
             const presetList = document.getElementById('list-container');
             const leaderboard = document.getElementById('leaderboard-container');
@@ -284,6 +286,10 @@
                 fetchLeaderboard();
             }
         }
+
+        // Attach listeners manually to avoid "Uncaught ReferenceError"
+        document.getElementById('tab-presets').addEventListener('click', () => switchTab('presets'));
+        document.getElementById('tab-leaderboard').addEventListener('click', () => switchTab('leaderboard'));
 
         (function checkEasterEgg() {
             const titleEl = document.getElementById('title');
@@ -317,9 +323,14 @@
             li.innerHTML = `
                 <div class="header-row">
                     <span class="preset-name">${displayName}</span>
-                    <button class="copy-btn" onclick="copyPreset('${codeString}', this)">Copy</button>
+                    <button class="copy-btn">Copy</button>
                 </div>
                 <div class="details-grid">${detailsHtml}</div>`;
+            
+            li.querySelector('.copy-btn').addEventListener('click', function() {
+                copyPreset(codeString, this);
+            });
+            
             return li;
         }
 
@@ -329,7 +340,7 @@
                 button.innerText = 'Copied!';
                 button.classList.add('success');
                 setTimeout(() => { button.innerText = 'Copy'; button.classList.remove('success'); }, 2000);
-            } catch (e) { alert("Failed to copy"); }
+            } catch (e) { console.error("Copy failed", e); }
         }
 
         function renderList(filterText = "") {
@@ -346,16 +357,15 @@
         async function fetchPresets() {
             const dot = document.getElementById('status-dot');
             try {
-                // cache: 'no-store' ensures it fetches fresh data every time you update the JSON
                 const response = await fetch(PRESET_URL, { cache: 'no-store' });
-                if (!response.ok) throw new Error("File not found");
+                if (!response.ok) throw new Error("Could not find preset-data.json");
                 const data = await response.json();
                 allPresets = data.map(item => (typeof item === 'string') ? item : item.string);
                 renderList();
                 dot.style.backgroundColor = 'var(--accent)';
                 dot.style.boxShadow = '0 0 8px var(--accent)';
             } catch (err) {
-                document.getElementById('list-container').innerHTML = `<li class="error">⚠️ CORS/Sync Error: Ensure the repo is Public and URLs are correct.</li>`;
+                document.getElementById('list-container').innerHTML = `<li class="error">⚠️ Sync Error: ${err.message}</li>`;
                 dot.style.backgroundColor = '#ef4444';
             }
         }
@@ -365,10 +375,22 @@
             container.innerHTML = '<p class="loading-pulse">Calculating rankings...</p>';
             try {
                 const response = await fetch(PLAYER_URL, { cache: 'no-store' });
-                if (!response.ok) throw new Error("File not found");
+                if (!response.ok) throw new Error("Could not find playerdata.json");
                 const data = await response.json();
                 data.sort((a, b) => b.points - a.points);
                 container.innerHTML = data.map((player, i) => `
                     <div class="leaderboard-item">
                         <div><span class="rank-badge">#${i + 1}</span><span style="font-weight:600;">${player.name}</span></div>
-                        <span class="points-text
+                        <span class="points-text">${player.points.toLocaleString()} pts</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = `<p class="error">⚠️ Sync Error: ${err.message}</p>`;
+            }
+        }
+
+        document.getElementById('search-input').addEventListener('input', (e) => renderList(e.target.value));
+        fetchPresets();
+    </script>
+</body>
+</html>

@@ -137,10 +137,14 @@
         const DEFAULT_KEYS = {
             "C_Pwr": 100,
             "C_PGen": 100,
-            "C_Agr": 100,
+            "C_Agr": 1,
             "C_Msk": 2,
             "P_EquDis": 0
         }
+
+        const HIDDEN_KEYS = [ // hide visually
+            "C_AIMax",
+        ]
         
         const KEY_NAMES = {
             "C_Pwr": "Power", 
@@ -161,10 +165,14 @@
             "C_MvR": "Sprint Speed",
             "I_EquJorPai": "Jordi's Paintbrush",
             "P_JorRep": "Jordi's Perserverance",
-            "P_JorLonTim": "Jordi The Door Camper"
+            "P_JorLonTim": "Jordi The Door Camper",
+            "C_MvS": "Stamina",
+            "P_FraRep": "Fran's Tenacity",
+            "P_BarYelSil": "Silent Presence",
+            "P_MikPikDorSpl": "Dormant Spliter"
         };
 
-        const BOOL_KEYS = ["P_EquDis", "P_JorSha", "I_EquJorPai"];
+        const BOOL_KEYS = ["P_EquDis", "P_JorSha", "I_EquJorPai", "P_MikPikDorSpl", "P_BarYelSil"];
         const PERCENTAGED_KEYS = ["C_Pwr", "C_Agr", "C_PGen"];
         let allPresets = [];
 

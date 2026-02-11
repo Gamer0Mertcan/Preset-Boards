@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One More Night: The Preset Collection</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --accent: #22c55e;
+            --muted: #94a3b8;
+            --color-t: #f87171;
+            --color-p: #c084fc;
+            --color-c: #facc15;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--card);
+            width: 100%;
+            max-width: 550px;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .header {
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #title.easter-egg {
+            color: #ff69b4;
+            display: inline-block;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        #search-input:focus {
+            border-color: var(--primary);
+        }
+
+        #status-dot {
+            height: 12px;
+            width: 12px;
+            background-color: #475569;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+
+        .preset-item {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            margin-bottom: 20px;
+            background: #242f42;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            transition: all 0.2s ease;
+        }
+
+        .preset-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .preset-name { font-weight: 700; font-size: 1.1rem; color: #fff; }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .detail-entry { 
+            border-bottom: 1px solid #47556944; 
+            padding: 4px 0;
+            display: flex;
+            justify-content: space-between;
+            padding-right: 8px;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .copy-btn.success { background: var(--accent); }
+        .error { color: #f87171; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2><span id="title">The Preset Collection</span><span id="status-dot"></span></h2>
+            <input type="text" id="search-input" placeholder="Search presets by name...">
+        </div>
+        <ul id="list-container">
+            <li style="text-align: center; padding: 20px; color: var(--muted);">Connecting...</li>
+        </ul>
+    </div>
+
+    <script>
+        // --- Easter Egg Logic ---
+        (function checkEasterEgg() {
+            const titleEl = document.getElementById('title');
+            if (Math.random() <= 0.01) { // 1% Chance
+                titleEl.innerText = "Baddie Tierlist";
+                titleEl.classList.add('easter-egg');
+            }
+        })();
+
+        const GITHUB_RAW_DATA_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/One-More-Night-The-Preset-Collection/refs/heads/main/data.json';
+
+        const KEY_NAMES = {
+            "C_Pwr": "Power",
+            "C_PGen": "Power Generator",
+            "T_Jor": "Jordi",
+            "C_AIMax": "Max AI Value",
+            "C_Agr": "Aggression",
+            "P_EquDis": "Equipment Disabler",
+            "T_JorWhi": "White",
+            "T_JorDivPun": "Divine Punishment",
+            "C_Msk": "Mask Hit Points",
+            "T_JorGolGun": "Golden Gun",
+            "T_JorStr": "Stratosfear"
+        };
+
+        const BOOL_KEYS = ["P_EquDis"];
+        const PERCENTAGED_KEYS = ["C_Pwr", "C_Agr", "C_PGen"];
+
+        let allPresets = [];
+
+        function createPresetItem(codeString) {
+            const li = document.createElement('li');
+            li.className = 'preset-item';
+
+            const parts = codeString.split(',').filter(p => p.includes('='));
+            const namePart = parts.find(p => p.startsWith('Name='));
+            const displayName = namePart ? namePart.split('=')[1] : "Unnamed Preset";
+            const technicalParts = parts.filter(p => !p.startsWith('Name='));
+
+            const prefixOrder = { 'T': 1, 'P': 2, 'C': 3 };
+            technicalParts.sort((a, b) => {
+                const orderA = prefixOrder[a[0]] || 99;
+                const orderB = prefixOrder[b[0]] || 99;
+                return orderA - orderB;
+            });
+
+            const detailsHtml = technicalParts.map(part => {
+                const [key, val] = part.split('=');
+                let colorVar = '--muted'; 
+                
+                if (key.startsWith('T_')) colorVar = 'var(--color-t)';
+                else if (key.startsWith('P_')) colorVar = 'var(--color-p)';
+                else if (key.startsWith('C_')) colorVar = 'var(--color-c)';
+
+                const label = KEY_NAMES[key] || key.slice(2);
+                let displayVal = val;
+
+                if (PERCENTAGED_KEYS.includes(key)) {
+                    displayVal = (key === "C_Agr") ? Math.floor(val * 100) + "%" : val + "%";
+                }
+                if (BOOL_KEYS.includes(key)) {
+                    displayVal = (val.trim() === "1") ? "Enabled" : "Disabled";
+                }
+                
+                return `
+                    <div class="detail-entry" style="color: ${colorVar}">
+                        <b>${label}:</b> 
+                        <span style="filter: brightness(1.2);">${displayVal}</span>
+                    </div>`;
+            }).join('');
+
+            li.innerHTML = `
+                <div class="header-row">
+                    <span class="preset-name">${displayName}</span>
+                    <button class="copy-btn" onclick="copyPreset('${codeString}', this)">Copy</button>
+                </div>
+                <div class="details-grid">${detailsHtml}</div>
+            `;
+            return li;
+        }
+
+        async function copyPreset(text, button) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const old = button.innerText;
+                button.innerText = 'Copied!';
+                button.classList.add('success');
+                setTimeout(() => {
+                    button.innerText = old;
+                    button.classList.remove('success');
+                }, 2000);
+            } catch (err) { alert('Copy failed'); }
+        }
+
+        function renderList(filterText = "") {
+            const list = document.getElementById('list-container');
+            list.innerHTML = '';
+            
+            const filtered = allPresets.filter(str => 
+                str.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<li style="text-align: center; padding: 20px; color: var(--muted);">No presets found.</li>';
+                return;
+            }
+
+            filtered.forEach(str => list.appendChild(createPresetItem(str)));
+        }
+
+        async function fetchPresets() {
+            const dot = document.getElementById('status-dot');
+            try {
+                const response = await fetch(GITHUB_RAW_DATA_URL);
+                const data = await response.json();
+                allPresets = data.map(item => (typeof item === 'string') ? item : item.string);
+                renderList();
+                dot.style.backgroundColor = '#22c55e';
+                dot.style.boxShadow = '0 0 10px #22c55e';
+            } catch (err) {
+                document.getElementById('list-container').innerHTML = '<li class="error">⚠️ Data Error.</li>';
+                dot.style.backgroundColor = '#ef4444';
+            }
+        }
+
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            renderList(e.target.value);
+        });
+
+        fetchPresets();
+    </script>
+</body>
+</html>

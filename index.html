@@ -21,10 +21,7 @@
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { 
-            background: #334155; 
-            border-radius: 10px; 
-        }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
         body {
@@ -47,166 +44,41 @@
             border: 1px solid #334155;
         }
 
-        .header {
-            border-bottom: 1px solid #334155;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-        }
+        .header { border-bottom: 1px solid #334155; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        h2 { margin: 0 0 1rem 0; font-size: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
 
-        h2 {
-            margin: 0 0 1rem 0;
-            font-size: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .tab-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-        }
-
+        .tab-container { display: flex; gap: 10px; margin-bottom: 1.5rem; }
         .tab-btn {
-            flex: 1;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: var(--muted);
-            padding: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            flex: 1; background: #0f172a; border: 1px solid #334155; color: var(--muted);
+            padding: 12px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.2s ease;
         }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
 
         #search-input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: white;
-            font-size: 0.9rem;
-            outline: none;
-            box-sizing: border-box;
-            transition: all 0.2s;
+            width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #334155;
+            background: #0f172a; color: white; font-size: 0.9rem; outline: none; box-sizing: border-box;
         }
 
-        #status-dot {
-            height: 10px;
-            width: 10px;
-            background-color: #475569;
-            border-radius: 50%;
-            transition: all 0.5s ease;
-        }
+        #status-dot { height: 10px; width: 10px; background-color: #475569; border-radius: 50%; transition: all 0.5s ease; }
 
-        .loading-pulse {
-            text-align: center;
-            padding: 40px;
-            color: var(--muted);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
+        .loading-pulse { text-align: center; padding: 40px; color: var(--muted); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
         ul { list-style: none; padding: 0; margin: 0; }
-
-        .preset-item {
-            padding: 16px;
-            margin-bottom: 16px;
-            background: #242f42;
-            border-radius: 14px;
-            border: 1px solid #334155;
-        }
-
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
+        .preset-item { padding: 16px; margin-bottom: 16px; background: #242f42; border-radius: 14px; border: 1px solid #334155; }
         .preset-name { font-weight: 700; color: #fff; }
-
         .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            font-size: 0.75rem;
-            background: rgba(15, 23, 42, 0.5);
-            padding: 12px;
-            border-radius: 10px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.75rem;
+            background: rgba(15, 23, 42, 0.5); padding: 12px; border-radius: 10px;
         }
-
-        .detail-entry { 
-            border-bottom: 1px solid #47556933; 
-            padding: 4px 0;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 18px;
-            background: #242f42;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #334155;
-        }
-
-        .rank-badge {
-            background: var(--primary);
-            color: white;
-            padding: 2px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-right: 12px;
-        }
-
-        .points-text {
-            color: var(--accent);
-            font-weight: 800;
-        }
-
-        .copy-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
+        .detail-entry { border-bottom: 1px solid #47556933; padding: 4px 0; display: flex; justify-content: space-between; }
+        .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #242f42; border-radius: 12px; margin-bottom: 10px; border: 1px solid #334155; }
+        .rank-badge { background: var(--primary); color: white; padding: 2px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; }
+        .points-text { color: var(--accent); font-weight: 800; }
+        .copy-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
         .copy-btn.success { background: var(--accent); }
         .hidden { display: none !important; }
         .error { color: #f87171; text-align: center; padding: 20px; font-size: 0.85rem; }
-
-        #title.easter-egg {
-            color: #ff69b4;
-            animation: heartBeat 1.5s infinite;
-        }
-
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.05); }
-            28% { transform: scale(1); }
-        }
     </style>
 </head>
 <body>
@@ -214,12 +86,10 @@
     <div class="container">
         <div class="header">
             <h2><span id="title">Preset Boards</span><span id="status-dot"></span></h2>
-            
             <div class="tab-container">
                 <button id="tab-presets" class="tab-btn active">Presets</button>
                 <button id="tab-leaderboard" class="tab-btn">Leaderboard</button>
             </div>
-
             <div id="search-wrapper">
                 <input type="text" id="search-input" placeholder="Search presets by name...">
             </div>
@@ -235,9 +105,8 @@
     </div>
 
     <script>
-        // Use direct Raw URLs for CORS safety.
         const PRESET_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/preset-data.json';
-        const PLAYER_URL = '';
+        const PLAYER_URL = 'https://raw.githubusercontent.com/Gamer0Mertcan/Preset-Boards/main/playerdata.json';
 
         const KEY_NAMES = {
             "C_Pwr": "Power", "C_PGen": "Power Generator", "T_Jor": "Jordi",
@@ -250,9 +119,7 @@
         const PERCENTAGED_KEYS = ["C_Pwr", "C_Agr", "C_PGen"];
         let allPresets = [];
 
-        // --- Core Functions ---
-
-        function switchTab(tab) {
+        async function switchTab(tab) {
             const presetList = document.getElementById('list-container');
             const leaderboard = document.getElementById('leaderboard-container');
             const search = document.getElementById('search-wrapper');
@@ -271,7 +138,7 @@
                 leaderboard.classList.remove('hidden');
                 lBtn.classList.add('active');
                 pBtn.classList.remove('active');
-                fetchLeaderboard();
+                await fetchLeaderboard();
             }
         }
 
@@ -279,13 +146,13 @@
             const container = document.getElementById('leaderboard-list');
             container.innerHTML = '<p class="loading-pulse">Calculating rankings...</p>';
             try {
-                const response = await fetch(PLAYER_URL, { cache: 'no-store' });
-                if (!response.ok) throw new Error("File not found");
+                const response = await fetch(PLAYER_URL, { cache: 'no-cache' });
+                if (!response.ok) throw new Error("Leaderboard data missing");
                 const data = await response.json();
                 data.sort((a, b) => b.points - a.points);
                 container.innerHTML = data.map((player, i) => `
                     <div class="leaderboard-item">
-                        <div><span class="rank-badge">#${i + 1}</span><span style="font-weight:600;">${player.name}</span></div>
+                        <div><span class="rank-badge">#${i + 1}</span> <span style="font-weight:600;">${player.name}</span></div>
                         <span class="points-text">${player.points.toLocaleString()} pts</span>
                     </div>
                 `).join('');
@@ -320,22 +187,11 @@
                 let displayVal = val;
                 if (PERCENTAGED_KEYS.includes(key)) displayVal = (key === "C_Agr" ? Math.floor(val * 100) : val) + "%";
                 if (BOOL_KEYS.includes(key)) displayVal = (val.trim() === "1") ? "Enabled" : "Disabled";
-                
                 return `<div class="detail-entry" style="color: ${colorVar}"><b>${KEY_NAMES[key] || key.slice(2)}:</b> <span>${displayVal}</span></div>`;
             }).join('');
 
-            li.innerHTML = `
-                <div class="header-row">
-                    <span class="preset-name">${displayName}</span>
-                    <button class="copy-btn">Copy</button>
-                </div>
-                <div class="details-grid">${detailsHtml}</div>`;
-            
-            // Modern click handler inside the list generator
-            li.querySelector('.copy-btn').addEventListener('click', function() {
-                copyPreset(codeString, this);
-            });
-            
+            li.innerHTML = `<div class="header-row"><span class="preset-name">${displayName}</span><button class="copy-btn">Copy</button></div><div class="details-grid">${detailsHtml}</div>`;
+            li.querySelector('.copy-btn').addEventListener('click', function() { copyPreset(codeString, this); });
             return li;
         }
 
@@ -344,7 +200,7 @@
             list.innerHTML = '';
             const filtered = allPresets.filter(str => str.toLowerCase().includes(filterText.toLowerCase()));
             if (filtered.length === 0) {
-                list.innerHTML = '<li style="text-align: center; padding: 40px; color: var(--muted);">No presets match.</li>';
+                list.innerHTML = '<li style="text-align: center; padding: 40px; color: var(--muted);">No presets found.</li>';
                 return;
             }
             filtered.forEach(str => list.appendChild(createPresetItem(str)));
@@ -353,20 +209,24 @@
         async function fetchPresets() {
             const dot = document.getElementById('status-dot');
             try {
-                const response = await fetch(PRESET_URL, { cache: 'no-store' });
-                if (!response.ok) throw new Error("File not found");
+                const response = await fetch(PRESET_URL, { cache: 'no-cache' });
+                if (!response.ok) throw new Error("Data file not found");
                 const data = await response.json();
                 allPresets = data.map(item => (typeof item === 'string') ? item : item.string);
                 renderList();
                 dot.style.backgroundColor = 'var(--accent)';
                 dot.style.boxShadow = '0 0 8px var(--accent)';
             } catch (err) {
-                document.getElementById('list-container').innerHTML = `<li class="error">⚠️ Database Offline: ${err.message}</li>`;
+                document.getElementById('list-container').innerHTML = `<li class="error">⚠️ Sync Error: ${err.message}</li>`;
                 dot.style.backgroundColor = '#ef4444';
             }
         }
 
-        // --- Event Listeners (The "Fix") ---
-
         document.getElementById('tab-presets').addEventListener('click', () => switchTab('presets'));
-        document.getElementById('tab-leader
+        document.getElementById('tab-leaderboard').addEventListener('click', () => switchTab('leaderboard'));
+        document.getElementById('search-input').addEventListener('input', (e) => renderList(e.target.value));
+
+        fetchPresets();
+    </script>
+</body>
+</html>

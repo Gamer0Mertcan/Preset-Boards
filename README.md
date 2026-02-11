@@ -4,4 +4,4 @@ an unofficial difficulty list and leaderboard for challenge presets combined in 
 # Discussion
 come check out the discord forum to apply and submit (Completions/Buffed)/Verifications/Greenruns
 
-<sup><sub>Leaderboard Calculation: DIFFICULTY + ADDITIONAL_AI(50 = 1) + GREERUN(10(> 30) | 0.2) + NO_EQUIPMENT(0.25) * ADDITIONAL_AGGRESSION(100 = 1.5)</sub></sup>
+<sup><sub>Leaderboard Calculation: DIFFICULTY + GLOBAL_ADDITIONAL_AI(50 = 1) + GREERUN(10(> 30) | 0.2) + NO_EQUIPMENT(0.25) * ADDITIONAL_AGGRESSION(100 = 1.5)</sub></sup>
